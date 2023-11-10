@@ -39,6 +39,7 @@ export default {
           router.push({
             name: 'test',
             query: {
+              name: route.query.name,
               time: route.query.time,
             }
           })

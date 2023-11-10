@@ -23,16 +23,28 @@
             </textarea>
         </div>
         <button @click="execute">실행</button>
+        <button @click="endTest">테스트 종료</button>
+        남은 시간
+        {{ r }}
         <div class="result">
+            입력
+            <input disabled :value="input" />
+            
+            출력
+            <input disabled :value="result" />
 
+            <input disabled v-if="result == output" value="정답입니다" />
+            <input disabled v-if="executed && result != output" value="틀렸습니다" />
         </div>
     </div>
   </div>
 </template>
 
 <script>
+import { useRouter, useRoute } from 'vue-router';
 import { ref } from 'vue';
 import axios from '@/axios';
+import { io } from 'socket.io-client';
 
 export default {
     setup() {
@@ -41,6 +53,38 @@ export default {
         const input = ref('');
         const output = ref('');
         const source = ref('');
+        const result = ref('');
+        const executed = ref(false);
+        const status = ref(false);
+        const remain = ref(0);
+        const r = ref(0);
+
+        const router = useRouter();
+        const route = useRoute();
+
+        remain.value = route.query.time;
+        r.value = route.query.time * 60;
+
+        setInterval(() => {
+            r.value -= 1;
+        }, 1000);
+
+        const interval = setInterval(() => {
+            endTest();
+        }, remain.value * 60 * 1000)
+
+        const socket = io("http://localhost:8080");
+
+        socket.on("endTest", () => {
+            console.log("??");
+            router.push({
+                name: 'endtest',
+                query: {
+                    userId: localStorage.getItem("currentUser"),
+                    status: status,
+                }
+            })
+        })
 
         const getProblem = async (num) => {
             await axios.post(`http://localhost:8080/problem/problem`, {
@@ -71,12 +115,23 @@ export default {
         getExample(1);
 
         const execute = async () => {
+            executed.value = true;
             await axios.post('http://localhost:8080/execute', {
                 source: source.value,
+                input: input.value,
             })
                 .then((res) => {
                     console.log(res.data);
+                    result.value = res.data.output;
+                    if(res.data.output === output.value) {
+                        status.value = true;
+                    }
                 })
+        }
+
+        const endTest = () => {
+            clearTimeout(interval);
+            socket.emit("end", route.query.name);
         }
 
         return {
@@ -85,6 +140,10 @@ export default {
             input,
             output,
             execute,
+            result,
+            executed,
+            endTest,
+            r,
         }
     }
 }

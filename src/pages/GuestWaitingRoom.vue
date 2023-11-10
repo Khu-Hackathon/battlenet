@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <div v-for="c in candidates" :key="c.name">
+  <div style="text-align: center; width: 700px; margin: 0 auto;">
+    <div style="margin-top: 3em;">
+      현재 참가자
+    </div>
+    <div class="candidates" v-for="c in candidates" :key="c.name">
         {{ c }}
     </div>
   </div>
@@ -46,6 +49,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.candidates {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
 
 </style>

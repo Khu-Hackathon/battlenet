@@ -6,6 +6,7 @@ import CreateRoom from "../pages/CreateRoom.vue";
 import MasterWaitingRoom from "../pages/MasterWaitingRoom.vue";
 import GuestWaitingRoom from "../pages/GuestWaitingRoom.vue";
 import Test from "../pages/Test.vue";
+import EndTest from "../pages/EndTest.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -51,6 +52,11 @@ const router = createRouter({
           path: '/test',
           name: "test",
           component: Test,
+        },
+        {
+          path: '/endtest',
+          name: "endtest",
+          component: EndTest,
         }
     ]
 })
