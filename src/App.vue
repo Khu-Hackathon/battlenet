@@ -1,23 +1,37 @@
 <template>
-  <router-view />
+  <div id="app">
+    <Navbar />
+    <div style="width: 100%; height: 3.75em;" />
+    <router-view />
+  </div>
 </template>
 
 <script>
+import Navbar from './components/Navbar.vue';
 
 export default {
   name: 'App',
   components: {
+    Navbar,
+  },
+  setup() {
+    
   }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Noto Sans Korean';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+input::placeholder {
+    font-family: 'Noto Sans Korean';
+}
+
+button {
+  font-family: 'Noto Sans Korean';
 }
 </style>
