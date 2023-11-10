@@ -8,24 +8,23 @@
             <th>번호</th>
             <th>방 이름</th>
             <th>문제 수</th>
-            <th>난이도</th>
             <th>시간</th>
             <th>비밀번호</th>
-            <th>인원</th>
+            <th>총 인원</th>
             <th>방장</th>
           </tr>
         </thead>
         <tbody>
           <!-- v-for="" -->
-          <tr class="content" @click="">
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
+          <tr class="content" v-for="(room, index) in rooms" :key="room.id" @click="moveToRoom(room.name, room.time, room.num_person)">
+            <td>{{index + 1}}</td>
+            <td>{{room.name}}</td>
+            <td>{{room.num_problem}}</td>
+            <td>{{room.time}}</td>
+            <td v-if="room.is_password == 1">있음</td>
+            <td v-else>없음</td>
+            <td>{{room.num_person}}</td>
+            <td>{{room.master}}</td>
           </tr>
         </tbody>
       </table>
@@ -35,25 +34,40 @@
 
 <script>
 import { ref } from 'vue';
-import { io } from 'socket.io-client';
+import { useRouter } from 'vue-router';
 import axios from '@/axios';
 
 export default {
     setup() {
-        const room = ref("");
+        const rooms = ref([]);
+        const router = useRouter();
 
-        axios.get('http://localhost:8080/room/findroom')
+        const getRoom = async () => {
+          await axios.get("http://localhost:8080/room/getroom")
             .then((res) => {
-                room.value = res.data;
+              rooms.value = res.data;
             })
+        }
 
-        console.log(room.value);
+        getRoom();
 
-        const socket = io("http://localhost:8080");
-        
-        socket.emit('hello', () => {
+        const moveToRoom = (name, time, num_person) => {
+          router.push({
+            name: "guestwaitingroom",
+            query: {
+              name: name,
+              time: time,
+              num_person: num_person,
+              guest: localStorage.getItem("currentUser"),
+            }
+          })
+        }
 
-        })
+        return {
+          getRoom,
+          rooms,
+          moveToRoom,
+        }
     }
 }
 </script>
@@ -97,8 +111,7 @@ input {
 }
 .rooms {
   text-align: center;
-  width: 60%;
-  min-width : 700px;
+  width: 100%;
   border-radius: 0.3em;
   border: 0.0625rem solid rgb(215, 226, 235);
 }

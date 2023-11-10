@@ -9,11 +9,15 @@
             테스트 방 만들기
         </router-link>
 
+        <router-link v-if="!isLogined" class="log" :to="{name: 'signup'}">
+            SignUp
+        </router-link>
+
         <router-link v-if="!isLogined" class="log" :to="{name: 'login'}">
             Login
         </router-link>
 
-        <router-link v-if="isLogined" class="log" :to="{name: 'home'}">
+        <router-link v-if="isLogined" class="log" @click="logout" :to="{name: 'home'}">
             Logout
         </router-link>
     </nav>
@@ -22,12 +26,27 @@
 
 <script>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 export default {
     setup() {
         const isLogined = ref(false);
+        const router = useRouter();
+
+        if(localStorage.getItem("isLogined")) isLogined.value = true;
+
+        const logout = () => {
+            localStorage.removeItem("isLogined");
+            localStorage.removeItem("currentUser");
+            isLogined.value = false;
+            router.push({
+                name: "home",
+            })
+        }
 
         return {
             isLogined,
+            logout,
         }
     }
 }
@@ -63,7 +82,7 @@ export default {
 }
 
 .createRoom {
-    padding-left: 50%;
+    padding-left: 40%;
     text-decoration: none;
     color: black;
 }

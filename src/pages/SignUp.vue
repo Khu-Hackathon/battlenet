@@ -1,11 +1,10 @@
 <template>
-    <div class="loginform">
+    <div class="signupform">
         <input
           class="id"
           v-model="id"
           type="id"
           placeholder="아이디"
-          @keyup.enter="login"
         />
         <br />
         <input
@@ -13,10 +12,23 @@
           v-model="password"
           type="password"
           placeholder="비밀번호"
-          @keyup.enter="login"
         />
         <br />
-        <button type="button" class="login" @click="login">로그인</button>
+        <input
+          class="password"
+          v-model="confirm"
+          type="password"
+          placeholder="비밀번호 확인"
+        />
+        <br />
+        <input
+          class="name"
+          v-model="name"
+          type="text"
+          placeholder="이름"
+        />
+        <br />
+        <button type="button" class="signup" @click="signup">회원가입</button>
     </div>
 </template>
 
@@ -29,22 +41,28 @@ export default {
     setup() {
       const id = ref('');
       const password = ref('');
+      const name = ref('');
+      const confirm = ref('');
       const router = useRouter();
 
-      const login = async () => {
-        await axios.post('http://localhost:8080/login/login', {
+      const signup = async () => {
+        console.log(password.value);
+        console.log(name.value);
+        console.log(confirm.value);
+        console.log(password.value);
+        await axios.post('http://localhost:8080/signup/signup', {
           id: id.value,
           password: password.value,
+          confirmPassword: confirm.value,
+          name: name.value,
         })
           .then((res) => {
             if(res.data.success) {
-              localStorage.setItem("currentUser", id.value);
-              localStorage.setItem("isLogined", true);
-              router.push({
-                name: 'home',
-              })
+                router.push({
+                    name: "login",
+                });
             } else {
-              alert(res.data.msg);
+                alert(res.data.msg);
             }
           })
       }
@@ -52,14 +70,16 @@ export default {
       return {
         id,
         password,
-        login,
+        name,
+        confirm,
+        signup,
       }
     }
 }
 </script>
 
 <style scoped>
-.loginform {
+.signupform {
     text-align: center;
 }
 .id {
@@ -86,7 +106,19 @@ export default {
     border-bottom: 1px solid black;
 }
 
-.login {
+.name {
+  width: 250px;
+  border: 1px solid white;
+  border-bottom: 1px solid gray;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+.name:focus {
+    outline: none;
+    border-bottom: 1px solid black;
+}
+
+.signup {
   width: 278px;
   background-color: gray;
   border: none;

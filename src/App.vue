@@ -22,16 +22,16 @@ export default {
 
 <style>
 #app {
-  font-family: 'Noto Sans Korean';
+  font-family: 'Noto Sans KR';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 input::placeholder {
-    font-family: 'Noto Sans Korean';
+    font-family: 'Noto Sans KR';
 }
 
 button {
-  font-family: 'Noto Sans Korean';
+  font-family: 'Noto Sans KR';
 }
 </style>
